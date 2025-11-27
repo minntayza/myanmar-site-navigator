@@ -1,7 +1,4 @@
-import { useState } from 'react';
 import { Button } from './ui/button';
-import { RadioGroup, RadioGroupItem } from './ui/radio-group';
-import { Label } from './ui/label';
 import { Atom } from 'lucide-react';
 import rosatomLogo from '@/assets/rosatom-logo.png';
 
@@ -10,13 +7,7 @@ interface SidebarProps {
   onAnalyze: () => void;
 }
 
-export default function Sidebar({ onSmrModelChange, onAnalyze }: SidebarProps) {
-  const [selectedModel, setSelectedModel] = useState('pressurized-water');
-
-  const handleModelChange = (value: string) => {
-    setSelectedModel(value);
-    onSmrModelChange(value === 'pressurized-water' ? 'Pressurized Water SMR' : 'High-Temp Gas SMR');
-  };
+export default function Sidebar({ onAnalyze }: SidebarProps) {
 
   return (
     <aside className="w-80 bg-sidebar-bg border-r border-border flex flex-col h-full">
@@ -32,38 +23,12 @@ export default function Sidebar({ onSmrModelChange, onAnalyze }: SidebarProps) {
           </div>
         </div>
         <p className="text-sm text-muted-foreground mt-3 border-l-4 border-accent pl-3">
-          Optimizing Energy Futures, Sustainably
+          Strategic SMR Placement for a Sustainable Future
         </p>
       </div>
 
-      {/* SMR Model Selection */}
+      {/* Analysis Section */}
       <div className="p-6 flex-1 overflow-auto">
-        <div className="mb-6">
-          <h3 className="text-base font-semibold text-foreground mb-4">SMR Model Selection</h3>
-          <RadioGroup value={selectedModel} onValueChange={handleModelChange}>
-            <div className="flex items-center space-x-3 p-3 rounded-md hover:bg-muted/50 transition-colors">
-              <RadioGroupItem value="pressurized-water" id="pressurized-water" />
-              <Label 
-                htmlFor="pressurized-water" 
-                className="flex items-center gap-2 cursor-pointer flex-1"
-              >
-                <Atom className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium">Pressurized Water SMR</span>
-              </Label>
-            </div>
-            <div className="flex items-center space-x-3 p-3 rounded-md hover:bg-muted/50 transition-colors">
-              <RadioGroupItem value="high-temp-gas" id="high-temp-gas" />
-              <Label 
-                htmlFor="high-temp-gas" 
-                className="flex items-center gap-2 cursor-pointer flex-1"
-              >
-                <Atom className="h-4 w-4 text-secondary" />
-                <span className="text-sm font-medium">High-Temp Gas SMR</span>
-              </Label>
-            </div>
-          </RadioGroup>
-        </div>
-
         <Button 
           onClick={onAnalyze}
           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md"
@@ -72,22 +37,32 @@ export default function Sidebar({ onSmrModelChange, onAnalyze }: SidebarProps) {
         </Button>
 
         <div className="mt-6">
-          <h3 className="text-sm font-semibold text-foreground mb-2">Site Summary</h3>
-          <div className="bg-muted/30 p-4 rounded-md text-sm text-muted-foreground">
-            Click any location on the map to analyze site suitability for SMR placement. 
-            The system evaluates water proximity, seismic activity, population density, 
-            infrastructure access, and environmental factors.
+          <h3 className="text-sm font-semibold text-foreground mb-2">Site Summary / Recommendations</h3>
+          <div className="bg-muted/30 p-4 rounded-md text-sm text-muted-foreground leading-relaxed">
+            Click any location on the map to analyze SMR site suitability. The system evaluates 
+            critical hazards (seismic faults, flood zones) and opportunities (water access, grid 
+            connection, infrastructure). Recommendations will highlight pros, cons, and suggest 
+            improvements or alternative sites.
           </div>
         </div>
 
         <div className="mt-6 p-4 bg-accent/10 rounded-md border border-accent/30">
-          <h4 className="text-sm font-semibold text-foreground mb-2">Key Considerations</h4>
+          <h4 className="text-sm font-semibold text-foreground mb-2">Critical Hazards</h4>
+          <ul className="text-xs text-muted-foreground space-y-1">
+            <li>• <span className="font-semibold">Sagaing Fault:</span> Major seismic risk</li>
+            <li>• <span className="font-semibold">Kyaukkyan Fault:</span> Moderate seismic risk</li>
+            <li>• <span className="font-semibold">Ayeyarwady Basin:</span> Flood prone area</li>
+            <li>• <span className="font-semibold">Ayeyarwady Delta:</span> High flood risk</li>
+          </ul>
+        </div>
+
+        <div className="mt-4 p-4 bg-success/10 rounded-md border border-success/30">
+          <h4 className="text-sm font-semibold text-foreground mb-2">Key Opportunities</h4>
           <ul className="text-xs text-muted-foreground space-y-1">
             <li>• Proximity to water sources (cooling)</li>
-            <li>• Low seismic risk zones</li>
-            <li>• Adequate grid infrastructure</li>
-            <li>• Safe distance from population centers</li>
-            <li>• Minimal environmental impact</li>
+            <li>• Existing grid infrastructure</li>
+            <li>• Transport and road access</li>
+            <li>• Low population density zones</li>
           </ul>
         </div>
       </div>
