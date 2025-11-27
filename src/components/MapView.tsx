@@ -21,12 +21,12 @@ interface SiteData {
   name: string;
   score: number;
   factors: {
+    seismicHazard: { status: 'good' | 'warning' | 'bad'; detail: string };
+    floodRisk: { status: 'good' | 'warning' | 'bad'; detail: string };
     waterSource: { status: 'good' | 'warning' | 'bad'; detail: string };
-    seismicActivity: { status: 'good' | 'warning' | 'bad'; detail: string };
     populationDensity: { status: 'good' | 'warning' | 'bad'; detail: string };
     gridConnection: { status: 'good' | 'warning' | 'bad'; detail: string };
     infrastructure: { status: 'good' | 'warning' | 'bad'; detail: string };
-    environmentalImpact: { status: 'good' | 'warning' | 'bad'; detail: string };
   };
 }
 
@@ -41,10 +41,26 @@ const myanmarCities = [
 const generateSiteData = (name: string, lat: number, lng: number): SiteData => {
   const scores: Record<string, number> = {
     'Naypyidaw': 72,
-    'Yangon': 65,
-    'Mandalay': 78,
-    'Bago': 68,
-    'Mawlamyine': 70,
+    'Yangon': 58,
+    'Mandalay': 65,
+    'Bago': 54,
+    'Mawlamyine': 62,
+  };
+
+  const seismicData: Record<string, { status: 'good' | 'warning' | 'bad'; detail: string }> = {
+    'Naypyidaw': { status: 'warning', detail: 'Near Sagaing Fault' },
+    'Yangon': { status: 'bad', detail: 'Sagaing Fault Zone: High Risk' },
+    'Mandalay': { status: 'bad', detail: 'Sagaing Fault: High Risk' },
+    'Bago': { status: 'warning', detail: 'Moderate Seismic Zone' },
+    'Mawlamyine': { status: 'good', detail: 'Low Seismic Zone' },
+  };
+
+  const floodData: Record<string, { status: 'good' | 'warning' | 'bad'; detail: string }> = {
+    'Naypyidaw': { status: 'good', detail: 'Elevated Area: Low Risk' },
+    'Yangon': { status: 'bad', detail: 'Ayeyarwady Delta: High Risk' },
+    'Mandalay': { status: 'warning', detail: 'Near Ayeyarwady: Moderate Risk' },
+    'Bago': { status: 'bad', detail: 'River Basin: High Risk' },
+    'Mawlamyine': { status: 'warning', detail: 'Coastal Area: Moderate Risk' },
   };
 
   const waterData: Record<string, { status: 'good' | 'warning' | 'bad'; detail: string }> = {
@@ -61,14 +77,14 @@ const generateSiteData = (name: string, lat: number, lng: number): SiteData => {
     name,
     score: scores[name] || 70,
     factors: {
+      seismicHazard: seismicData[name] || { status: 'good', detail: 'Low Risk Zone' },
+      floodRisk: floodData[name] || { status: 'good', detail: 'Low Risk' },
       waterSource: waterData[name] || { status: 'good', detail: 'River: 5 km' },
-      seismicActivity: { status: 'good', detail: 'Low Risk Zone' },
       populationDensity: name === 'Yangon' ? 
         { status: 'warning', detail: 'Medium (500k)' } : 
         { status: 'good', detail: 'Low (<100k)' },
       gridConnection: { status: 'good', detail: 'Existing Substation: 20 km' },
       infrastructure: { status: 'good', detail: 'Major Road/Port' },
-      environmentalImpact: { status: 'good', detail: 'Minimal Impact' },
     },
   };
 };
@@ -90,6 +106,71 @@ export default function MapView({ smrModel }: { smrModel: string }) {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
+
+    // Add Sagaing Fault Line (major north-south fault)
+    const sagaingFault = L.polyline([
+      [23.5, 95.0],
+      [22.0, 95.5],
+      [21.0, 96.0],
+      [19.5, 96.2],
+      [18.0, 96.0],
+      [16.5, 95.8],
+    ], {
+      color: '#ef4444',
+      weight: 2,
+      opacity: 0.7,
+      dashArray: '10, 10',
+    }).addTo(map);
+    sagaingFault.bindPopup('<div class="font-semibold text-sm">Sagaing Fault</div><div class="text-xs">Major Seismic Risk Zone</div>');
+
+    // Add Kyaukkyan Fault Line (eastern fault)
+    const kyaukkyanFault = L.polyline([
+      [22.5, 97.5],
+      [21.0, 97.8],
+      [19.5, 98.0],
+      [18.0, 97.5],
+    ], {
+      color: '#f97316',
+      weight: 2,
+      opacity: 0.6,
+      dashArray: '10, 10',
+    }).addTo(map);
+    kyaukkyanFault.bindPopup('<div class="font-semibold text-sm">Kyaukkyan Fault</div><div class="text-xs">Moderate Seismic Risk</div>');
+
+    // Add Ayeyarwady River Basin flood zone
+    const floodBasin = L.polygon([
+      [21.5, 94.5],
+      [22.0, 96.5],
+      [20.5, 96.8],
+      [19.0, 96.5],
+      [18.5, 95.5],
+      [19.5, 94.8],
+    ], {
+      color: '#3b82f6',
+      weight: 1,
+      opacity: 0.3,
+      fillColor: '#60a5fa',
+      fillOpacity: 0.15,
+    }).addTo(map);
+    floodBasin.bindPopup('<div class="font-semibold text-sm">Ayeyarwady River Basin</div><div class="text-xs">Flood Prone Area</div>');
+
+    // Add Ayeyarwady Delta flood zone
+    const floodDelta = L.polygon([
+      [17.5, 94.5],
+      [17.0, 95.0],
+      [16.5, 96.5],
+      [16.0, 96.8],
+      [15.8, 96.5],
+      [16.0, 95.5],
+      [16.5, 94.8],
+    ], {
+      color: '#3b82f6',
+      weight: 1,
+      opacity: 0.3,
+      fillColor: '#60a5fa',
+      fillOpacity: 0.2,
+    }).addTo(map);
+    floodDelta.bindPopup('<div class="font-semibold text-sm">Ayeyarwady Delta</div><div class="text-xs">High Flood Risk Area</div>');
 
     // Add city markers
     myanmarCities.forEach((city) => {

@@ -1,4 +1,4 @@
-import { X, Droplet, Activity, Users, Zap, Truck, Leaf } from 'lucide-react';
+import { X, Droplet, Activity, Users, Zap, Truck, Waves } from 'lucide-react';
 import { Button } from './ui/button';
 import SuitabilityBadge from './SuitabilityBadge';
 import FactorItem from './FactorItem';
@@ -7,12 +7,12 @@ interface SiteData {
   name: string;
   score: number;
   factors: {
+    seismicHazard: { status: 'good' | 'warning' | 'bad'; detail: string };
+    floodRisk: { status: 'good' | 'warning' | 'bad'; detail: string };
     waterSource: { status: 'good' | 'warning' | 'bad'; detail: string };
-    seismicActivity: { status: 'good' | 'warning' | 'bad'; detail: string };
     populationDensity: { status: 'good' | 'warning' | 'bad'; detail: string };
     gridConnection: { status: 'good' | 'warning' | 'bad'; detail: string };
     infrastructure: { status: 'good' | 'warning' | 'bad'; detail: string };
-    environmentalImpact: { status: 'good' | 'warning' | 'bad'; detail: string };
   };
 }
 
@@ -44,17 +44,24 @@ export default function SiteInfoCard({ data, onClose, smrModel }: SiteInfoCardPr
 
       <div className="space-y-3 mb-4">
         <FactorItem
+          icon={Activity}
+          label="Seismic Hazard (Fault Proximity)"
+          detail={data.factors.seismicHazard.detail}
+          status={data.factors.seismicHazard.status}
+        />
+        
+        <FactorItem
+          icon={Waves}
+          label="Flood Risk (River/Delta Proximity)"
+          detail={data.factors.floodRisk.detail}
+          status={data.factors.floodRisk.status}
+        />
+        
+        <FactorItem
           icon={Droplet}
           label="Water Source Proximity"
           detail={data.factors.waterSource.detail}
           status={data.factors.waterSource.status}
-        />
-        
-        <FactorItem
-          icon={Activity}
-          label="Seismic Activity"
-          detail={data.factors.seismicActivity.detail}
-          status={data.factors.seismicActivity.status}
         />
         
         <FactorItem
@@ -76,13 +83,6 @@ export default function SiteInfoCard({ data, onClose, smrModel }: SiteInfoCardPr
           label="Infrastructure & Transport"
           detail={data.factors.infrastructure.detail}
           status={data.factors.infrastructure.status}
-        />
-        
-        <FactorItem
-          icon={Leaf}
-          label="Environmental Impact"
-          detail={data.factors.environmentalImpact.detail}
-          status={data.factors.environmentalImpact.status}
         />
       </div>
 
