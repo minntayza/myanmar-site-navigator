@@ -36,6 +36,12 @@ const myanmarCities = [
   { name: 'Mandalay', lat: 21.9588, lng: 96.0891 },
   { name: 'Bago', lat: 17.3355, lng: 96.4807 },
   { name: 'Mawlamyine', lat: 16.4905, lng: 97.6278 },
+  { name: 'Myitkyina', lat: 25.3832, lng: 97.3967 },
+  { name: 'Taunggyi', lat: 20.7891, lng: 97.0379 },
+  { name: 'Sittwe', lat: 20.1483, lng: 92.8998 },
+  { name: 'Pathein', lat: 16.7791, lng: 94.7325 },
+  { name: 'Meiktila', lat: 20.8781, lng: 95.8578 },
+  { name: 'Myeik', lat: 12.4395, lng: 98.6003 },
 ];
 
 const generateSiteData = (name: string, lat: number, lng: number): SiteData => {
@@ -45,6 +51,12 @@ const generateSiteData = (name: string, lat: number, lng: number): SiteData => {
     'Mandalay': 65,
     'Bago': 54,
     'Mawlamyine': 62,
+    'Myitkyina': 68,
+    'Taunggyi': 70,
+    'Sittwe': 56,
+    'Pathein': 52,
+    'Meiktila': 75,
+    'Myeik': 64,
   };
 
   const seismicData: Record<string, { status: 'good' | 'warning' | 'bad'; detail: string }> = {
@@ -53,6 +65,12 @@ const generateSiteData = (name: string, lat: number, lng: number): SiteData => {
     'Mandalay': { status: 'bad', detail: 'Sagaing Fault: High Risk' },
     'Bago': { status: 'warning', detail: 'Moderate Seismic Zone' },
     'Mawlamyine': { status: 'good', detail: 'Low Seismic Zone' },
+    'Myitkyina': { status: 'warning', detail: 'Near Kyaukkyan Fault' },
+    'Taunggyi': { status: 'warning', detail: 'Moderate Seismic Activity' },
+    'Sittwe': { status: 'good', detail: 'Low Seismic Zone' },
+    'Pathein': { status: 'warning', detail: 'Sagaing Fault: Moderate Risk' },
+    'Meiktila': { status: 'good', detail: 'Low Risk Zone' },
+    'Myeik': { status: 'good', detail: 'Stable Seismic Zone' },
   };
 
   const floodData: Record<string, { status: 'good' | 'warning' | 'bad'; detail: string }> = {
@@ -61,6 +79,12 @@ const generateSiteData = (name: string, lat: number, lng: number): SiteData => {
     'Mandalay': { status: 'warning', detail: 'Near Ayeyarwady: Moderate Risk' },
     'Bago': { status: 'bad', detail: 'River Basin: High Risk' },
     'Mawlamyine': { status: 'warning', detail: 'Coastal Area: Moderate Risk' },
+    'Myitkyina': { status: 'warning', detail: 'Ayeyarwady Headwaters: Moderate Risk' },
+    'Taunggyi': { status: 'good', detail: 'Highland Area: Low Risk' },
+    'Sittwe': { status: 'bad', detail: 'Coastal Delta: High Risk' },
+    'Pathein': { status: 'bad', detail: 'Ayeyarwady Delta: High Risk' },
+    'Meiktila': { status: 'good', detail: 'Dry Zone: Low Risk' },
+    'Myeik': { status: 'warning', detail: 'Coastal Area: Moderate Risk' },
   };
 
   const waterData: Record<string, { status: 'good' | 'warning' | 'bad'; detail: string }> = {
@@ -69,6 +93,12 @@ const generateSiteData = (name: string, lat: number, lng: number): SiteData => {
     'Mandalay': { status: 'good', detail: 'Ayeyarwady River: 3 km' },
     'Bago': { status: 'warning', detail: 'Bago River: 8 km' },
     'Mawlamyine': { status: 'good', detail: 'Thanlwin River: 1 km' },
+    'Myitkyina': { status: 'good', detail: 'Ayeyarwady River: 2 km' },
+    'Taunggyi': { status: 'good', detail: 'Inle Lake: 4 km' },
+    'Sittwe': { status: 'good', detail: 'Kaladan River: 1 km' },
+    'Pathein': { status: 'good', detail: 'Pathein River: 1 km' },
+    'Meiktila': { status: 'good', detail: 'Meiktila Lake: 3 km' },
+    'Myeik': { status: 'good', detail: 'Coastal Water: 2 km' },
   };
 
   return {
